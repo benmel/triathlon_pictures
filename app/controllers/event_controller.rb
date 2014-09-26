@@ -1,12 +1,7 @@
 class EventController < ApplicationController
-	# TODO move this
-	require 'open-uri'
-
+	require_dependency 'event_page_parser'
 	def show
-		@url = params[:url]
-		page = Nokogiri::HTML(open(@url))
-		anchors = page.css('a.highslide')
-		@res = anchors.map { |a| a['href'] }
+		url = params[:url]
+		@res = EventPageParser::ImageScraper.links(url)
 	end
-
 end
