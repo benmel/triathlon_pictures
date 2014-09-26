@@ -1,0 +1,7 @@
+<h1>Triathlon picture scraper</h1>
+<p>Enter a URL with pictures</p>
+<%= form_tag event_path, method: :get do %>
+  <%= label_tag(:url, "Event pictures url:") %>
+  <%= text_field_tag(:url) %>
+  <%= submit_tag("Search") %>	
+<% end %>
