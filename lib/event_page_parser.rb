@@ -1,7 +1,6 @@
 module EventPageParser
 	class ImageScraper
 		# TODO remove require
-		# TODO get rid of self
 		require 'uri'
 		require 'open-uri'
 

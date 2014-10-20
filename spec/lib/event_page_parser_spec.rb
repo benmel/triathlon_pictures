@@ -41,5 +41,8 @@ RSpec.describe EventPageParser do
 	end
 
 	describe "#not_found" do
+		it "returns an empty array" do
+			expect(image_scraper.not_found).to eq([])
+		end
 	end
 end
