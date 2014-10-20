@@ -5,10 +5,10 @@ module EventPageParser
 		require 'uri'
 		require 'open-uri'
 
-		def self.links(url)
+		def links(url)
 			file = open(url)
 			page = Nokogiri::HTML(file)
-		
+
 			case host(file)
 			when 'www.backprint.com'
 				backprint(page)
@@ -17,19 +17,22 @@ module EventPageParser
 			else
 				not_found
 			end
-
 		end
 
-		def self.host(file)
+		def valid(url)
+			true
+		end
+
+		def host(file)
 			file.base_uri.host
 		end
 
-		def self.backprint(page)
+		def backprint(page)
 			anchors = page.css('a.highslide')
 			anchors.map { |a| a['href'] }
 		end
 
-		def self.not_found
+		def not_found
 			[]
 		end
 	end
