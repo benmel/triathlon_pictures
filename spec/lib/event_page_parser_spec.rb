@@ -35,6 +35,11 @@ RSpec.describe EventPageParser do
 	end
 
 	describe "#host" do
+		it "should return the host name of a file" do
+			file = double("file")
+			expect(file).to receive_message_chain(:base_uri, :host)
+			image_scraper.host(file)
+		end
 	end
 
 	describe "#backprint" do

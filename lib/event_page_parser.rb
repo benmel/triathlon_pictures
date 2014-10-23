@@ -19,7 +19,7 @@ module EventPageParser
 		end
 
 		def valid(url)
-			true
+			# test that it is http url
 		end
 
 		def host(file)
