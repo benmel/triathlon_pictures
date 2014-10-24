@@ -3,12 +3,11 @@ module EventPageParser
 		# TODO remove require
 		require 'uri'
 		require 'open-uri'
+		require 'addressable/uri'
 
-		def links(url)
-			file = open(url)
-			page = Nokogiri::HTML(file)
-
-			case host(file)
+		def links
+			page = Nokogiri::HTML(@file)
+			case host
 			when 'www.backprint.com'
 				backprint(page)
 			when 'backprint.com'
@@ -18,12 +17,38 @@ module EventPageParser
 			end
 		end
 
-		def valid(url)
-			# test that it is http url
+		def set_url(url)
+			@url = Addressable::URI.heuristic_parse(url)
 		end
 
-		def host(file)
-			file.base_uri.host
+		def request_url
+			if %w(http https).include?(@url.scheme)
+				@file = begin
+					open(@url.to_s)
+				rescue OpenURI::HTTPError => he
+					puts he
+					nil
+				rescue SocketError => se	
+					puts se
+					nil
+				rescue Errno::ENOENT => en
+					puts en
+					nil
+				rescue Errno::ETIMEDOUT => et
+					puts et
+					nil	
+				end
+			else
+				@file = nil
+			end	
+		end
+
+		def valid
+			!@file.nil? 
+		end
+
+		def host
+			@file.base_uri.host
 		end
 
 		def backprint(page)

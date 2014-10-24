@@ -46,3 +46,4 @@ gem 'pry'
 
 # Requests
 gem 'nokogiri'
+gem 'addressable'
