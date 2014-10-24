@@ -1,15 +1,13 @@
 module EventPageParser
 	class ImageScraper
 		# TODO remove require
-		# TODO get rid of self
 		require 'uri'
 		require 'open-uri'
+		require 'addressable/uri'
 
-		def self.links(url)
-			file = open(url)
-			page = Nokogiri::HTML(file)
-		
-			case host(file)
+		def links
+			page = Nokogiri::HTML(@file)
+			case host
 			when 'www.backprint.com'
 				backprint(page)
 			when 'backprint.com'
@@ -17,19 +15,48 @@ module EventPageParser
 			else
 				not_found
 			end
-
 		end
 
-		def self.host(file)
-			file.base_uri.host
+		def set_url(url)
+			@url = Addressable::URI.heuristic_parse(url)
 		end
 
-		def self.backprint(page)
+		def request_url
+			if %w(http https).include?(@url.scheme)
+				@file = begin
+					open(@url.to_s)
+				rescue OpenURI::HTTPError => he
+					puts he
+					nil
+				rescue SocketError => se	
+					puts se
+					nil
+				rescue Errno::ENOENT => en
+					puts en
+					nil
+				rescue Errno::ETIMEDOUT => et
+					puts et
+					nil	
+				end
+			else
+				@file = nil
+			end	
+		end
+
+		def valid
+			!@file.nil? 
+		end
+
+		def host
+			@file.base_uri.host
+		end
+
+		def backprint(page)
 			anchors = page.css('a.highslide')
 			anchors.map { |a| a['href'] }
 		end
 
-		def self.not_found
+		def not_found
 			[]
 		end
 	end
